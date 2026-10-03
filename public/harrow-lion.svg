@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <rect width="100" height="100" rx="20" fill="#0A1B2E"/>
+  <path d="M50 15 L78 28 L78 60 C78 76 50 88 50 88 C50 88 22 76 22 60 L22 28 Z" fill="#102A45" stroke="#C5A059" stroke-width="3"/>
+  <path d="M50 25 L70 35 L70 58 C70 70 50 78 50 78 C50 78 30 70 30 58 L30 35 Z" fill="#06111E"/>
+  <!-- Crown / Lion motif -->
+  <path d="M40 42 L45 35 L50 42 L55 35 L60 42 L58 48 L42 48 Z" fill="#C5A059"/>
+  <!-- AI Sparkle -->
+  <path d="M50 50 L53 58 L61 61 L53 64 L50 72 L47 64 L39 61 L47 58 Z" fill="#E5C76C"/>
+  <circle cx="50" cy="61" r="2.5" fill="#FFFFFF"/>
+</svg>
+
