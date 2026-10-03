@@ -4,9 +4,15 @@ A single English/Thai chat screen for staff questions, backed by Gemini File Sea
 
 ## Current readiness
 
-The UI and server integration are implemented. **Live Google sign-in, document indexing and Gemini answers still require the school's configuration and an end-to-end acceptance check.** There are no sample school answers, credentials or approved documents built into this version. Missing configuration shows a setup message and the API fails closed.
+The UI and server integration are implemented. **Live Google sign-in, document indexing and Gemini answers still require the school's configuration and an end-to-end acceptance check.** There are no real school answers, credentials or approved documents built into this version. A separate, explicitly labelled fictional demo runs locally in the browser. Missing configuration shows a setup message and the API fails closed.
 
 This is a custom Gemini API integration, not an embedded Gem or NotebookLM notebook. Existing Gemini Workspace licences do not configure or fund this API automatically. School IT must select an approved Google project and billing/data arrangements.
+
+## Concept demo
+
+When Google is not configured, the homepage opens in Demo Mode. You can also select Try demo chat. No school sign-in is needed for fictional examples. Topics: absence, room bookings, IT support, trips, maintenance and supplies. Ask a topic question, then “What details should I include?” to see a contextual follow-up. English and Thai are supported. Unknown topics get a clear fallback.
+
+This is a deterministic concept demo, not live AI or approved Harrow policy. Every sample answer and source is labelled. Demo conversations never call the Gemini API, never join live chat history, and grant no admin access. Exit demo clears the conversation and returns to the authenticated service.
 
 ## Netlify configuration
 
