@@ -1,0 +1,397 @@
+{
+  "version": 1,
+  "departments": [
+    {
+      "id": "ls-activities",
+      "area": "lower-school",
+      "name": "Lower School CCA",
+      "nameTh": "กิจกรรมเสริมหลักสูตรระดับประถม",
+      "description": "Attendance, cover, cancellations and collection.",
+      "descriptionTh": "การเช็กชื่อ ครูแทน การยกเลิกกิจกรรม และการรับนักเรียน",
+      "icon": "spark",
+      "keywords": [
+        "cca",
+        "activity",
+        "activities",
+        "cover",
+        "cancel",
+        "collection",
+        "socs",
+        "กิจกรรม",
+        "ครูแทน"
+      ],
+      "questions": [
+        {
+          "en": "What should I do if a Year 3 CCA is cancelled?",
+          "th": "ควรทำอย่างไรหากกิจกรรม CCA ของ Year 3 ถูกยกเลิก?"
+        }
+      ],
+      "owner": "",
+      "email": "",
+      "notebookUrl": "",
+      "workflowUrl": "",
+      "confirmed": false,
+      "workflowConfirmed": false,
+      "reviewed": "",
+      "sources": []
+    },
+    {
+      "id": "ls-pe-sport",
+      "area": "lower-school",
+      "name": "Lower School PE & Sport",
+      "nameTh": "พลศึกษาและกีฬาระดับประถม",
+      "description": "PE routines, swimming and sporting activities.",
+      "descriptionTh": "แนวปฏิบัติวิชาพลศึกษา ว่ายน้ำ และกิจกรรมกีฬา",
+      "icon": "sport",
+      "keywords": [
+        "pe",
+        "sport",
+        "swimming",
+        "pool",
+        "กีฬา",
+        "ว่ายน้ำ"
+      ],
+      "questions": [
+        {
+          "en": "Where can I find the Lower School swimming procedures?",
+          "th": "ดูแนวปฏิบัติการว่ายน้ำระดับประถมได้ที่ไหน?"
+        }
+      ],
+      "owner": "",
+      "email": "",
+      "notebookUrl": "",
+      "workflowUrl": "",
+      "confirmed": false,
+      "workflowConfirmed": false,
+      "reviewed": "",
+      "sources": []
+    },
+    {
+      "id": "ls-teaching",
+      "area": "lower-school",
+      "name": "Lower School Teaching & Learning",
+      "nameTh": "การเรียนการสอนระดับประถม",
+      "description": "Planning, assessment and classroom procedures.",
+      "descriptionTh": "การวางแผน การประเมิน และแนวปฏิบัติในห้องเรียน",
+      "icon": "book",
+      "keywords": [
+        "primary",
+        "pre-prep",
+        "prep",
+        "phonics",
+        "early years",
+        "reception",
+        "ประถม",
+        "ปฐมวัย"
+      ],
+      "questions": [
+        {
+          "en": "Where can I find the assessment guidance for Year 2?",
+          "th": "ดูแนวทางการประเมินของ Year 2 ได้ที่ไหน?"
+        }
+      ],
+      "owner": "",
+      "email": "",
+      "notebookUrl": "",
+      "workflowUrl": "",
+      "confirmed": false,
+      "workflowConfirmed": false,
+      "reviewed": "",
+      "sources": []
+    },
+    {
+      "id": "ls-pastoral",
+      "area": "lower-school",
+      "name": "Lower School Pastoral & Routines",
+      "nameTh": "การดูแลนักเรียนและกิจวัตรระดับประถม",
+      "description": "Daily routines, pupil support and staff duties.",
+      "descriptionTh": "กิจวัตรประจำวัน การดูแลนักเรียน และหน้าที่บุคลากร",
+      "icon": "heart",
+      "keywords": [
+        "lower school",
+        "ls",
+        "playground",
+        "dismissal",
+        "เวร",
+        "สนามเด็กเล่น"
+      ],
+      "questions": [
+        {
+          "en": "What is the procedure when a pupil is collected late?",
+          "th": "มีขั้นตอนอย่างไรเมื่อนักเรียนมีผู้มารับช้า?"
+        }
+      ],
+      "owner": "",
+      "email": "",
+      "notebookUrl": "",
+      "workflowUrl": "",
+      "confirmed": false,
+      "workflowConfirmed": false,
+      "reviewed": "",
+      "sources": []
+    },
+    {
+      "id": "us-activities",
+      "area": "upper-school",
+      "name": "Upper School Activities",
+      "nameTh": "กิจกรรมระดับมัธยม",
+      "description": "Activities, societies, attendance and organisation.",
+      "descriptionTh": "กิจกรรม ชมรม การเช็กชื่อ และการจัดการ",
+      "icon": "spark",
+      "keywords": [
+        "upper school cca",
+        "society",
+        "societies",
+        "us cca",
+        "ชมรม"
+      ],
+      "questions": [
+        {
+          "en": "How do I report an absence from an Upper School activity?",
+          "th": "แจ้งการขาดกิจกรรมระดับมัธยมอย่างไร?"
+        }
+      ],
+      "owner": "",
+      "email": "",
+      "notebookUrl": "",
+      "workflowUrl": "",
+      "confirmed": false,
+      "workflowConfirmed": false,
+      "reviewed": "",
+      "sources": []
+    },
+    {
+      "id": "us-pe-sport",
+      "area": "upper-school",
+      "name": "Upper School PE & Sport",
+      "nameTh": "พลศึกษาและกีฬาระดับมัธยม",
+      "description": "Fixtures, PE procedures and sports participation.",
+      "descriptionTh": "การแข่งขันกีฬา แนวปฏิบัติพลศึกษา และการเข้าร่วมกีฬา",
+      "icon": "sport",
+      "keywords": [
+        "fixture",
+        "bisac",
+        "fobisia",
+        "kit",
+        "gcse pe",
+        "ชุดพละ",
+        "การแข่งขัน"
+      ],
+      "questions": [
+        {
+          "en": "What is the procedure for reporting missing PE kit?",
+          "th": "ขั้นตอนการรายงานนักเรียนไม่มีชุดพละคืออะไร?"
+        }
+      ],
+      "owner": "",
+      "email": "",
+      "notebookUrl": "",
+      "workflowUrl": "",
+      "confirmed": false,
+      "workflowConfirmed": false,
+      "reviewed": "",
+      "sources": []
+    },
+    {
+      "id": "us-teaching",
+      "area": "upper-school",
+      "name": "Upper School Teaching & Learning",
+      "nameTh": "การเรียนการสอนระดับมัธยม",
+      "description": "Teaching, assessment and academic procedures.",
+      "descriptionTh": "การสอน การประเมิน และแนวปฏิบัติด้านวิชาการ",
+      "icon": "book",
+      "keywords": [
+        "secondary",
+        "gcse",
+        "a-level",
+        "assessment",
+        "exam",
+        "มัธยม",
+        "สอบ"
+      ],
+      "questions": [
+        {
+          "en": "Where can I find the assessment and reporting guidance?",
+          "th": "ดูแนวทางการประเมินและรายงานผลได้ที่ไหน?"
+        }
+      ],
+      "owner": "",
+      "email": "",
+      "notebookUrl": "",
+      "workflowUrl": "",
+      "confirmed": false,
+      "workflowConfirmed": false,
+      "reviewed": "",
+      "sources": []
+    },
+    {
+      "id": "us-pastoral",
+      "area": "upper-school",
+      "name": "Upper School Pastoral & Houses",
+      "nameTh": "การดูแลนักเรียนและบ้านระดับมัธยม",
+      "description": "Tutor routines, house procedures and pupil support.",
+      "descriptionTh": "กิจวัตรครูประจำชั้น ระบบบ้าน และการดูแลนักเรียน",
+      "icon": "heart",
+      "keywords": [
+        "tutor",
+        "house",
+        "sixth form",
+        "ครูประจำชั้น",
+        "ระบบบ้าน"
+      ],
+      "questions": [
+        {
+          "en": "What are the tutor responsibilities for attendance follow-up?",
+          "th": "ครูประจำชั้นมีหน้าที่ติดตามการเข้าเรียนอย่างไร?"
+        }
+      ],
+      "owner": "",
+      "email": "",
+      "notebookUrl": "",
+      "workflowUrl": "",
+      "confirmed": false,
+      "workflowConfirmed": false,
+      "reviewed": "",
+      "sources": []
+    },
+    {
+      "id": "admin-it",
+      "area": "whole-school",
+      "name": "IT & Digital Support",
+      "nameTh": "ไอทีและการสนับสนุนดิจิทัล",
+      "description": "Accounts, school devices and digital systems.",
+      "descriptionTh": "บัญชีผู้ใช้ อุปกรณ์โรงเรียน และระบบดิจิทัล",
+      "icon": "laptop",
+      "keywords": [
+        "it",
+        "login",
+        "password",
+        "wifi",
+        "wi-fi",
+        "laptop",
+        "google",
+        "isams",
+        "computer",
+        "รหัสผ่าน",
+        "คอมพิวเตอร์",
+        "ไอที"
+      ],
+      "questions": [
+        {
+          "en": "How do I request help with my school laptop?",
+          "th": "ขอความช่วยเหลือเรื่องแล็ปท็อปโรงเรียนอย่างไร?"
+        }
+      ],
+      "owner": "",
+      "email": "",
+      "notebookUrl": "",
+      "workflowUrl": "",
+      "confirmed": false,
+      "workflowConfirmed": false,
+      "reviewed": "",
+      "sources": []
+    },
+    {
+      "id": "admin-hr",
+      "area": "whole-school",
+      "name": "HR & Staff Support",
+      "nameTh": "ทรัพยากรบุคคลและการดูแลบุคลากร",
+      "description": "Leave, staff procedures and employment guidance.",
+      "descriptionTh": "การลา แนวปฏิบัติบุคลากร และข้อมูลการจ้างงาน",
+      "icon": "people",
+      "keywords": [
+        "hr",
+        "leave",
+        "visa",
+        "insurance",
+        "employment",
+        "sick",
+        "ลา",
+        "วีซ่า",
+        "ประกัน"
+      ],
+      "questions": [
+        {
+          "en": "How do I request leave?",
+          "th": "ขอลางานอย่างไร?"
+        }
+      ],
+      "owner": "",
+      "email": "",
+      "notebookUrl": "",
+      "workflowUrl": "",
+      "confirmed": false,
+      "workflowConfirmed": false,
+      "reviewed": "",
+      "sources": []
+    },
+    {
+      "id": "admin-operations",
+      "area": "whole-school",
+      "name": "Operations & Transport",
+      "nameTh": "ปฏิบัติการและการขนส่ง",
+      "description": "Transport, rooms, facilities and daily operations.",
+      "descriptionTh": "การขนส่ง ห้อง สถานที่ และงานปฏิบัติการประจำวัน",
+      "icon": "bus",
+      "keywords": [
+        "bus",
+        "transport",
+        "shuttle",
+        "room",
+        "facilities",
+        "maintenance",
+        "รถ",
+        "ห้อง",
+        "ซ่อม"
+      ],
+      "questions": [
+        {
+          "en": "Where can I find the staff shuttle information?",
+          "th": "ดูข้อมูลรถรับส่งบุคลากรได้ที่ไหน?"
+        }
+      ],
+      "owner": "",
+      "email": "",
+      "notebookUrl": "",
+      "workflowUrl": "",
+      "confirmed": false,
+      "workflowConfirmed": false,
+      "reviewed": "",
+      "sources": []
+    },
+    {
+      "id": "admin-finance",
+      "area": "whole-school",
+      "name": "Finance & Procurement",
+      "nameTh": "การเงินและการจัดซื้อ",
+      "description": "Purchasing, expenses and budget procedures.",
+      "descriptionTh": "การจัดซื้อ ค่าใช้จ่าย และขั้นตอนงบประมาณ",
+      "icon": "receipt",
+      "keywords": [
+        "purchase",
+        "budget",
+        "expense",
+        "finance",
+        "order",
+        "procurement",
+        "จัดซื้อ",
+        "งบประมาณ",
+        "การเงิน"
+      ],
+      "questions": [
+        {
+          "en": "What is the process for requesting a purchase?",
+          "th": "ขั้นตอนขอจัดซื้อคืออะไร?"
+        }
+      ],
+      "owner": "",
+      "email": "",
+      "notebookUrl": "",
+      "workflowUrl": "",
+      "confirmed": false,
+      "workflowConfirmed": false,
+      "reviewed": "",
+      "sources": []
+    }
+  ]
+}
