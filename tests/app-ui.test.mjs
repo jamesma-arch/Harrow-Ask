@@ -1,3 +1,4 @@
+import {initialDepartments} from '../public/notebook-drafts.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
@@ -8,7 +9,7 @@ const notebooks=await readFile(new URL('../public/notebooks.js',import.meta.url)
 test('staff chat and notebook workspace load together before school setup',async()=>{
   const dom=new JSDOM(html,{url:'https://harrow.test/',runScripts:'outside-only'}),w=dom.window,d=w.document;
   w.fetch=async()=>Response.json({ready:false,authReady:false,clientId:'',provider:'notebooklm'});
-  const setup=w.Function(notebooks.replace('export function','function')+';return setupNotebooks;')();
+  const setup=w.Function('initialDepartments',notebooks.replace(/^import[^\n]+\n/,'').replace('export function','function')+';return setupNotebooks;')(initialDepartments);
   await w.Function('setupNotebooks','return (async()=>{'+app.replace(/^import[^\n]+\n/,'')+'\n})();')(setup);
   await new Promise(resolve=>setImmediate(resolve));
   assert.match(d.getElementById('conversation').textContent,/Hello, I’m Harrow Ask/);

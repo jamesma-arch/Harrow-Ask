@@ -1,6 +1,7 @@
+import { initialDepartments } from './notebook-drafts.js';
 export function setupNotebooks({api,getUser,getConfig,onChange}) {
   const $=id=>document.getElementById(id),form=$('notebook-form');
-  let catalog={entries:[],revision:'',gatewayReady:false},editing='',loading=false,open=false,accessUser='';
+  let catalog={entries:initialDepartments(),revision:'',gatewayReady:false},editing='',loading=false,open=false,accessUser='';
   const errors={ADMIN_REQUIRED:'Only school administrators can manage department notebooks.',SIGN_IN_SETUP_REQUIRED:'School sign-in needs to be configured before departments can be saved.',SIGN_IN_REQUIRED:'Please sign in again with your school account.',INVALID_NOTEBOOK:'Check the department name, notebook title and ID.',INVALID_NOTEBOOK_URL:'Use a NotebookLM link from notebooklm.google.com or notebooklm.cloud.google.com.',NOTEBOOK_ID_MISMATCH:'The notebook ID does not match the link.',NOTEBOOK_APPROVAL_REQUIRED:'To include a notebook, add its ID or link and confirm its sources are approved for staff.',DUPLICATE_NOTEBOOK:'This notebook is already linked to another department entry.',CATALOG_CHANGED:'Another administrator has updated the registry. Refresh and review the entries before saving.',CATALOG_FULL:'The registry is full. Archive an unused entry first.',SERVICE_UNAVAILABLE:'The notebook registry could not be reached. Please try again.'};
   function text(tag,value,className=''){const e=document.createElement(tag);e.textContent=value;if(className)e.className=className;return e;}
   function status(value,error=false){$('registry-status').textContent=value;$('registry-status').classList.toggle('error',error);}
@@ -9,7 +10,7 @@ export function setupNotebooks({api,getUser,getConfig,onChange}) {
     $('notebook-fields').disabled=!allowed || loading;$('add-notebook').disabled=!allowed || loading;$('refresh-notebooks').disabled=!allowed || loading;
     $('registry-access').hidden=allowed;
     $('registry-access').textContent=!getConfig().authReady?'School sign-in is not configured yet. The department workspace is ready to use once administrator access is connected.':!user?'Sign in with your approved school administrator account to manage department notebooks.':'Your account has staff access. Department notebook management is for administrators.';
-    if(accessUser!==(user?.email||'')){catalog={entries:[],revision:'',gatewayReady:false};accessUser=user?.email||'';clear();render();if(open && allowed)void load();}
+    if(accessUser!==(user?.email||'')){catalog={entries:user?[]:initialDepartments(),revision:'',gatewayReady:false};accessUser=user?.email||'';clear();render();if(open && allowed)void load();}
   }
   function render(){const active=catalog.entries.filter(e=>!e.archived),included=active.filter(e=>e.enabled && e.approved && e.notebookId);
     $('department-count').textContent=active.length;$('enabled-count').textContent=included.length;$('registry-connection').textContent=catalog.gatewayReady?'Configured':'Pending';

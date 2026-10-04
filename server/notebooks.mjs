@@ -1,3 +1,4 @@
+import { initialDepartments } from '../public/notebook-drafts.js';
 import { randomUUID } from 'node:crypto';
 import { HttpError } from './auth.mjs';
 export function validateNotebook(input) {
@@ -24,10 +25,10 @@ export function createNotebookRepository(storeFactory,env=process.env) {
     return getStore({name:'harrow-ask-notebooks-'+scope,consistency:'strong'});
   }
   return {
-    async read(){const s=await store();const entry=await s.getWithMetadata('catalog',{type:'json'});return {entries:entry?.data?.entries || [],revision:entry?.etag || '',updatedAt:entry?.data?.updatedAt || null};},
+    async read(){const s=await store();const entry=await s.getWithMetadata('catalog',{type:'json'});return {entries:entry?.data?.entries ?? initialDepartments(),revision:entry?.etag || '',updatedAt:entry?.data?.updatedAt || null};},
     async write(input,revision,user){const s=await store();const current=await s.getWithMetadata('catalog',{type:'json'});
       if(typeof revision!=='string' || revision!==(current?.etag || ''))throw new HttpError(409,'CATALOG_CHANGED');
-      const entries=current?.data?.entries || [];let next;
+      const entries=current?.data?.entries ?? initialDepartments();let next;
       if(input.action==='archive'){if(typeof input.id!=='string' || !entries.some(e=>e.id===input.id))throw new HttpError(404,'NOTEBOOK_NOT_FOUND');next=entries.map(e=>e.id===input.id?{...e,enabled:false,archived:true,updatedAt:new Date().toISOString(),updatedBy:user.email}:e);}
       else {
         const value=validateNotebook(input.notebook);
