@@ -1,0 +1,26 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import {JSDOM} from 'jsdom';
+const html=await readFile(new URL('../public/index.html',import.meta.url),'utf8');
+const app=await readFile(new URL('../public/app.js',import.meta.url),'utf8');
+const notebooks=await readFile(new URL('../public/notebooks.js',import.meta.url),'utf8');
+test('staff chat and notebook workspace load together before school setup',async()=>{
+  const dom=new JSDOM(html,{url:'https://harrow.test/',runScripts:'outside-only'}),w=dom.window,d=w.document;
+  w.fetch=async()=>Response.json({ready:false,authReady:false,clientId:'',provider:'notebooklm'});
+  const setup=w.Function(notebooks.replace('export function','function')+';return setupNotebooks;')();
+  await w.Function('setupNotebooks','return (async()=>{'+app.replace(/^import[^\n]+\n/,'')+'\n})();')(setup);
+  await new Promise(resolve=>setImmediate(resolve));
+  assert.match(d.getElementById('conversation').textContent,/Hello, I’m Harrow Ask/);
+  assert.equal(d.getElementById('send').disabled,true);
+  d.getElementById('notebooks').click();
+  assert.equal(d.getElementById('notebook-panel').hidden,false);
+  assert.equal(d.getElementById('notebook-fields').disabled,true);
+  assert.equal(d.getElementById('google-signin').parentElement.id,'registry-signin');
+  d.getElementById('back-chat').click();
+  assert.equal(d.getElementById('staff-chat').hidden,false);
+  d.getElementById('language').click();
+  assert.equal(d.documentElement.lang,'th');
+  assert.match(d.getElementById('conversation').textContent,/สวัสดี/);
+  dom.window.close();
+});

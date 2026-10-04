@@ -7,7 +7,7 @@ The staff UI and server gateway adapter are implemented. **Live NotebookLM answe
 The NotebookLM gateway below is a custom school integration contract, NOT an official Google NotebookLM chat endpoint. Google's documented NotebookLM Enterprise APIs currently describe notebook/source management; those management calls do not by themselves implement this chat contract. A shared notebook link alone cannot power an in-app chat. School IT must supply a supported, approved integration capable of querying that notebook, or reconsider using NotebookLM's own chat UI. Do not use unofficial scraping, browser cookies or personal login tokens.
 
 ## Deployment
-Netlify publishes only public/, bundles netlify/functions/ask.mjs and runs node --test tests/server.test.mjs. Node 22. No npm dependencies.
+Netlify publishes only public/, bundles netlify/functions/ask.mjs and runs npm test. Node 22. Uses @netlify/blobs for the department registry; jsdom is used by UI tests.
 Repository: jamesma-arch/Harrow-Ask. Production branch: main.
 
 ## Server configuration
@@ -31,6 +31,19 @@ The adapter rejects wrong providers/notebooks and withholds answers without cita
 No document uploads, edits or deletions in Harrow Ask. Maintain sources in NotebookLM.
 
 ## Validation
-node --test tests/server.test.mjs
+npm test
 Covers Google token signatures, pupil exclusion, fixed NotebookLM scope, unconfigured service, missing grounding, legacy endpoint removal, cross-origin requests and secret redaction. Gateway requests use test fixtures, not live NotebookLM.
 Before activation: validate allowed/disallowed staff sign-in, real notebook answers/citations, unknown/conflicting sources, follow-ups and English/Thai responses.
+
+## Department notebook workspace (v1.1)
+Open **Department notebooks** in the header. Administrators can save draft departments before creating notebooks, add a title/description/owner, paste a NotebookLM link or ID, approve it for all staff, and include or pause it. Archive removes it from the chat's source set; archived entries can be restored through Edit. The UI is English for this administration workspace; staff chat remains English/Thai.
+
+The registry persists in a server-side Netlify Blobs store across production deployments. Preview stores are isolated from production. Strong reads and conditional writes prevent stale administrator saves from overwriting each other. These controls and the UI require the school Google OAuth setup and ADMIN_EMAILS allowlist, even while the chat gateway is not configured. No school sign-in credentials have been supplied yet.
+
+The chat sends only approved, enabled, unarchived notebook IDs from the server registry to the configured gateway. The browser cannot select a different notebook or inject a source set. The gateway must query across the supplied notebooks and return citations with each notebookId; the app labels citations with the associated department and withholds answers citing excluded notebooks. This implements source registration and routing, not a Google NotebookLM chat API or automatic document sync. Live multi-notebook retrieval is still pending the supported school integration.
+
+Multi-notebook gateway request: notebooks: [{ notebookId, department, title }]. The legacy notebookId property is also sent when exactly one notebook is selected. Response citations: [{ title, sourceId, notebookId }]. An optional response-level notebookId can be used for single-notebook responses. All referenced notebook IDs must belong to the supplied list.
+
+The NOTEBOOKLM_NOTEBOOK_ID environment variable is now optional. It is used only as a compatibility fallback while the registry has never been populated; an archived/paused registry does not re-enable that fallback. Manage source contents and permissions in NotebookLM itself.
+
+Run npm test for all 27 tests, including registry persistence, concurrent edits, admin-only access, source activation/archival, cross-department routing and excluded-source withholding. Storage and NotebookLM gateway calls are fixtures in tests; live school acceptance is not yet complete.
