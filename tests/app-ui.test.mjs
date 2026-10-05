@@ -24,6 +24,13 @@ test('staff chat and notebook workspace load together before school setup',async
   d.getElementById('demo-notebook').showModal=function(){this.open=true;};d.getElementById('demo-notebook').close=function(){this.open=false;};d.getElementById('demo-chat').click();assert.equal(d.getElementById('send').disabled,false);d.getElementById('demo-source-view').click();assert.equal(d.querySelectorAll('#demo-documents section').length,3);d.getElementById('close-demo-notebook').click();const initialRequests=requests;d.getElementById('question').value='How do I request cover?';d.getElementById('question-form').dispatchEvent(new w.Event('submit',{cancelable:true}));await new Promise(resolve=>setImmediate(resolve));assert.match(d.getElementById('conversation').textContent,/Demo source: staffing/);assert.equal(requests,initialRequests);d.getElementById('demo-chat').click();assert.equal(d.getElementById('send').disabled,true);
   d.getElementById('language').click();
   assert.equal(d.documentElement.lang,'th');
+  assert.equal(d.querySelector('[data-it-language=th]').hidden,false);
+  assert.equal(d.querySelector('[data-it-language=en]').hidden,true);
+  assert.match(d.getElementById('it-setup-title').textContent,/เซิร์ฟเวอร์ Harrow/);
+  d.getElementById('language').click();
+  assert.equal(d.querySelector('[data-it-language=th]').hidden,true);
+  assert.equal(d.querySelector('[data-it-language=en]').hidden,false);
+  d.getElementById('language').click();
   assert.match(d.getElementById('conversation').textContent,/สวัสดี/);
   dom.window.close();
 });
