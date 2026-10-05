@@ -7,7 +7,7 @@ export function validateNotebook(input) {
   const department=clean('department',80,true),title=clean('title',120,true),description=clean('description',500),owner=clean('owner',120);
   let notebookId=clean('notebookId',200),notebookUrl=clean('notebookUrl',1000);
   if(notebookUrl){let url;try{url=new URL(notebookUrl);}catch{throw new HttpError(400,'INVALID_NOTEBOOK_URL');}
-    if(url.protocol!=='https:' || !['notebooklm.google.com','notebooklm.cloud.google.com'].includes(url.hostname) || url.port || url.username || url.password || url.hash || [...url.searchParams.keys()].some(k=>k!=='authuser')) throw new HttpError(400,'INVALID_NOTEBOOK_URL');
+    if(url.protocol!=='https:' || !['notebook.google.com','notebooklm.google.com','notebooklm.cloud.google.com'].includes(url.hostname) || url.port || url.username || url.password || url.hash || [...url.searchParams.keys()].some(k=>k!=='authuser')) throw new HttpError(400,'INVALID_NOTEBOOK_URL');
     const fromUrl=url.pathname.match(/\/notebook\/([a-zA-Z0-9_-]+)\/?$/)?.[1];
     if(fromUrl && notebookId && fromUrl!==notebookId)throw new HttpError(400,'NOTEBOOK_ID_MISMATCH');
     notebookId=notebookId || fromUrl || '';
