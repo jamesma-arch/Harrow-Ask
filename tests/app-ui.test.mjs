@@ -11,7 +11,7 @@ test('staff chat and notebook workspace load together before school setup',async
   const dom=new JSDOM(html,{url:'https://harrow.test/',runScripts:'outside-only'}),w=dom.window,d=w.document;
   let requests=0;w.fetch=async()=>{requests++;returnResponse.json({ready:false,authReady:false,clientId:'',provider:'notebooklm'});};
   const setup=w.Function('initialDepartments',notebooks.replace(/^import[^\n]+\n/,'').replace('export function','function')+';return setupNotebooks;')(initialDepartments);
-  await w.Function('setupNotebooks','demoAnswer','demoSources','return (async()=>{'+app.replace(/^(?:import[^\n]+\n)+/,'')+'\n})();')(setup,demoAnswer,demoSources);
+  await w.Function('setupNotebooks','demoAnswer','demoSources','setupTutorial','return (async()=>{'+app.replace(/^(?:import[^\n]+\n)+/,'')+'\n})();')(setup,demoAnswer,demoSources,w.Function((await readFile(new URL('../public/tutorial.js',import.meta.url),'utf8')).replace('export function','function')+';return setupTutorial;')());
   await new Promise(resolve=>setImmediate(resolve));
   assert.match(d.getElementById('conversation').textContent,/Hello, I’m Harrow Ask/);
   assert.equal(d.getElementById('send').disabled,true);

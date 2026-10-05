@@ -66,3 +66,7 @@ The older custom NotebookLM gateway is retained for compatibility when `ANSWER_P
 Run `npm test`. Drive, Gemini and storage are fixtures. Tests cover authentication, ownership, sync publication, asynchronous indexing, concurrency, failures, source withdrawal, file versions, unsafe upload destinations, citations and demo isolation. Passing tests do not establish live Google connectivity.
 
 The scripted LS CCA demo stays clearly labelled and separate from live sources.
+
+### Guided tutorial
+
+The header Tutorial button opens a replayable English/Thai walkthrough with the CCA QA gold spotlight and dimmed background. Chat guidance covers access, questions, citations, demo and language. Open Department notebooks and choose Tutorial for the department lead sync walkthrough. Next, Back, Finish, close and Escape support keyboard use; the guide never starts a sync or sends a question.
