@@ -1,54 +1,68 @@
-# Harrow Ask
-A simple English/Thai staff chatbot, converted from GemsBot and the earlier Ask Harrow preview. Staff see a greeting and one chat composer. The deployed app does not include Gem directories, demo policies, upload controls or Gemini File Search answers.
+# Harrow Ask — department source pilot
 
-## Current status
-The staff UI and server gateway adapter are implemented. **Live NotebookLM answers are not connected.** No notebook ID, school NotebookLM gateway, Google OAuth configuration or staff roster has been supplied or acceptance-tested. The site clearly shows this state and disables sending questions.
+Harrow Ask gives authorised staff one English/Thai chat screen. The LS CCA pilot uses approved original documents in a Google Drive folder and Gemini File Search for retrieval and citations. The department's NotebookLM link remains available for its own use. Harrow Ask does not query, export, scrape or refresh NotebookLM itself.
 
-The NotebookLM gateway below is a custom school integration contract, NOT an official Google NotebookLM chat endpoint. Google's documented NotebookLM Enterprise APIs currently describe notebook/source management; those management calls do not by themselves implement this chat contract. A shared notebook link alone cannot power an in-app chat. School IT must supply a supported, approved integration capable of querying that notebook, or reconsider using NotebookLM's own chat UI. Do not use unofficial scraping, browser cookies or personal login tokens.
+## Status
 
-## Deployment
-Netlify publishes only public/, bundles netlify/functions/ask.mjs and runs npm test. Node 22. Uses @netlify/blobs for the department registry; jsdom is used by UI tests.
-Repository: jamesma-arch/Harrow-Ask. Production branch: main.
+Implementation and fixture tests are ready on `codex/drive-source-pilot` for review. No live Drive folder, Google service credentials, model selection or staff OAuth configuration has been connected or acceptance-tested in this pilot. Do not label it live. The Netlify production branch is unchanged.
 
-## Server configuration
-Set only after the supported school integration is available:
-- GOOGLE_CLIENT_ID: approved school web OAuth client
-- GOOGLE_ALLOWED_DOMAIN: school Workspace domain
-- STAFF_EMAILS / ADMIN_EMAILS: explicit permitted staff emails; pupil accounts do not gain access simply by sharing a domain
-- NOTEBOOKLM_CHAT_ENDPOINT: approved HTTPS school gateway endpoint (fixed server-side)
-- NOTEBOOKLM_GATEWAY_TOKEN: server-only gateway bearer credential
-- NOTEBOOKLM_NOTEBOOK_ID: fixed approved notebook identifier
+## Department workflow
 
-Do not commit credentials or school source contents. Redeploy after configuring function variables. Authorise the exact production origin in Google OAuth.
-Questions and prior turns are sent to the configured school gateway only after staff authentication. Chat/token state stays in browser memory; only language preference persists.
+1. Maintain approved originals in one department Drive folder. Use those originals as sources in the department's NotebookLM notebook too.
+2. An administrator assigns the folder and the lead's school email in Department notebooks, approves the sources for all authorised staff and enables the department.
+3. The assigned lead can view and sync only their own departments. Only administrators can change ownership, folders, approval, activation or archival. Leads must also be in the staff allowlist.
+4. Update the originals and select **Sync department**. The app imports a complete replacement source set, waits for indexing and verifies the folder has not changed during sync. It activates that set only after success.
+5. If a tab closes, **Continue sync** resumes the persisted job. Progress, last successful sync, source count, file versions and sanitised failures are visible. Jobs expire after 30 minutes and can then restart.
+6. Refresh NotebookLM sources separately using Google's notebook controls. Sync department updates Harrow Ask only.
 
-## Gateway contract
-POST JSON: { provider: "notebooklm", notebookId, message, language: "en" | "th", history: [{ role: "user" | "model", text }], user: { email }, sourcePolicy: "notebook-only" }.
-The gateway must authenticate the app, enforce notebook permissions, query only the configured NotebookLM notebook, and return no general-model fallback.
-Response: { provider: "notebooklm", notebookId, supported: true, text, citations: [{ title, sourceId }] }.
-The adapter rejects wrong providers/notebooks and withholds answers without citations. Those metadata checks rely on a trusted gateway; they are not independent proof of grounding. Real notebook provenance must be verified in the gateway acceptance check.
+Failed syncs retain the last successful set, which may be out of date. For urgent withdrawals, an administrator must pause or archive the department, then fix and sync before enabling again. Empty-folder sync removes all active sources. Folder changes invalidate the old active set immediately. Drive document removal takes effect in answers after successful sync.
 
-No document uploads, edits or deletions in Harrow Ask. Maintain sources in NotebookLM.
+## Pilot limits
+
+- Files directly in the folder: no recursion, nested folders or shortcuts. Unsupported entries fail the whole sync rather than being silently skipped.
+- Up to 40 files, each up to 8 MB. Supported: PDF, TXT, Markdown, CSV/TSV, XLSX, DOCX and PPTX. Native Google Docs and Slides export as PDF; Google Sheets export as XLSX, retaining worksheet tabs. Google's export limits also apply.
+- Spreadsheet imports include the entire workbook, potentially including hidden sheets. Use a sanitised staff-facing workbook. Do not use the original Season 1 administration workbook until confidential worksheets are removed.
+- Progress uses short authenticated requests driven by the browser, avoiding one long Netlify function invocation.
+- Every sync rebuilds the complete index. Retired and failed indexes are not automatically deleted in this pilot. The Google administrator must review and remove unused File Search stores before broad production use. Drive originals and NotebookLM sources are never deleted by this app.
+
+## School IT setup
+
+Use an approved school Google project. No personal Google passwords, browser cookies, undocumented notebook endpoints or domain-wide delegation are required.
+
+1. Enable Drive API for a dedicated service account and grant it Viewer access to the approved source folder (or the school-approved shared-drive scope). The app uses `drive.readonly` and never impersonates staff.
+2. Configure an approved Gemini API key and a File Search-capable model supporting `generateContent`. Confirm availability and quota in the school's account.
+3. Configure a Google web OAuth client for staff sign-in, authorising the exact private-preview origin. Add the production origin when deployment is approved.
+4. Set these as protected server environment variables, never frontend variables or repository files:
+
+| Variable | Purpose |
+|---|---|
+| `ANSWER_PROVIDER` | `drive-file-search` explicitly opts into the pilot |
+| `GEMINI_API_KEY` | Server-only Gemini credential |
+| `GEMINI_MODEL` | Approved File Search-capable model ID, without `models/` |
+| `DRIVE_SERVICE_ACCOUNT_EMAIL` | Dedicated Drive service account email |
+| `DRIVE_SERVICE_ACCOUNT_PRIVATE_KEY` | Existing PEM key; newlines or escaped newline sequences accepted |
+| `GOOGLE_CLIENT_ID` | Staff web OAuth client ID |
+| `GOOGLE_ALLOWED_DOMAIN` | School Workspace domain |
+| `ADMIN_EMAILS` | Comma-separated administrator allowlist |
+| `STAFF_EMAILS` | Comma-separated staff allowlist, including department leads |
+
+5. Publish a private preview from `codex/drive-source-pilot`. Sign in as administrator, assign the LS CCA source folder and lead, approve suitable sources, and run the first sync.
+6. Acceptance-test real questions, cited originals, missing/conflicting information, Thai answers, pending policy, ownership and changed/deleted sources before promoting to production.
+
+Department and sync state persist in separate Netlify Blobs stores. Preview storage is isolated by deployment ID; production state persists across deployments. Conditional writes and leases prevent conflicting edits/syncs. Source bytes are not committed or returned from the sync API.
+
+## Answers and evidence
+
+Only approved, enabled, unarchived departments with a successfully indexed matching folder can supply answers. Browser-supplied stores are ignored. The prompt treats documents as evidence, not instructions, and distinguishes draft guidance, pending approvals and conflicts.
+
+Answers need grounding support mapped to unique documents in the active manifest, otherwise they are withheld. Source activation is rechecked after retrieval. Citations contain the department, original Drive link, modification time and sync time; the chat displays links and sync times. Metadata validation does not independently prove every sentence is supported. Live answer quality requires school acceptance testing.
+
+Sign-in tokens and conversations stay in browser memory. Only language preference persists locally. Gemini receives the question, recent conversation and selected store names. The Drive service token is used only with Drive API. A school-domain email alone never grants staff access.
+
+The older custom NotebookLM gateway is retained for compatibility when `ANSWER_PROVIDER` is not `drive-file-search`. It still needs a supported school integration; a notebook link alone never enables it.
 
 ## Validation
-npm test
-Covers Google token signatures, pupil exclusion, fixed NotebookLM scope, unconfigured service, missing grounding, legacy endpoint removal, cross-origin requests and secret redaction. Gateway requests use test fixtures, not live NotebookLM.
-Before activation: validate allowed/disallowed staff sign-in, real notebook answers/citations, unknown/conflicting sources, follow-ups and English/Thai responses.
 
-## Department notebook workspace (v1.1)
-Open **Department notebooks** in the header. Administrators can save draft departments before creating notebooks, add a title/description/owner, paste a NotebookLM link or ID, approve it for all staff, and include or pause it. Archive removes it from the chat's source set; archived entries can be restored through Edit. The UI is English for this administration workspace; staff chat remains English/Thai.
+Run `npm test`. Drive, Gemini and storage are fixtures. Tests cover authentication, ownership, sync publication, asynchronous indexing, concurrency, failures, source withdrawal, file versions, unsafe upload destinations, citations and demo isolation. Passing tests do not establish live Google connectivity.
 
-The registry persists in a server-side Netlify Blobs store across production deployments. Preview stores are isolated from production. Strong reads and conditional writes prevent stale administrator saves from overwriting each other. These controls and the UI require the school Google OAuth setup and ADMIN_EMAILS allowlist, even while the chat gateway is not configured. No school sign-in credentials have been supplied yet.
-
-The chat sends only approved, enabled, unarchived notebook IDs from the server registry to the configured gateway. The browser cannot select a different notebook or inject a source set. The gateway must query across the supplied notebooks and return citations with each notebookId; the app labels citations with the associated department and withholds answers citing excluded notebooks. This implements source registration and routing, not a Google NotebookLM chat API or automatic document sync. Live multi-notebook retrieval is still pending the supported school integration.
-
-Multi-notebook gateway request: notebooks: [{ notebookId, department, title }]. The legacy notebookId property is also sent when exactly one notebook is selected. Response citations: [{ title, sourceId, notebookId }]. An optional response-level notebookId can be used for single-notebook responses. All referenced notebook IDs must belong to the supplied list.
-
-The NOTEBOOKLM_NOTEBOOK_ID environment variable is now optional. It is used only as a compatibility fallback while the registry has never been populated; an archived/paused registry does not re-enable that fallback. Manage source contents and permissions in NotebookLM itself.
-
-Run npm test for all 31 tests, including registry persistence, concurrent edits, admin-only access, source activation/archival, cross-department routing and excluded-source withholding. Storage and NotebookLM gateway calls are fixtures in tests; live school acceptance is not yet complete.
-
-The initial admin catalog includes a demo **Lower School CCA** draft with no notebook link or ID. It supplies no chat answers until an administrator adds a notebook and approves/enables it. Before sign-in, only this public sample is displayed; saved department records remain protected. The first admin edit saves the draft in the registry, and archiving it does not recreate it.
-
-## Interactive demo notebook
-Try demo opens a self-contained LS CCA demonstration with three labelled illustrative sources (attendance, cover and QA). The draft department card opens the same source viewer. Answers use scripted topic matching, not NotebookLM or a generative model. Unknown topics are declined. No demo questions are sent to the school gateway, no notebook identifiers are fabricated, and the real source registry stays unchanged. Exit demo resets the conversation and restores the normal authenticated chat.
+The scripted LS CCA demo stays clearly labelled and separate from live sources.

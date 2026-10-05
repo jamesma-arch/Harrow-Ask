@@ -14,9 +14,13 @@ export function validateNotebook(input) {
     notebookUrl=url.origin+url.pathname;
   }
   if(notebookId && !/^[a-zA-Z0-9_-]{1,200}$/.test(notebookId))throw new HttpError(400,'INVALID_NOTEBOOK');
+  let driveFolderId=clean('driveFolderId',300),ownerEmail=clean('ownerEmail',200).toLowerCase();
+  if(driveFolderId.startsWith('https://')){let url;try{url=new URL(driveFolderId);}catch{throw new HttpError(400,'INVALID_DRIVE_FOLDER');}if(url.hostname!=='drive.google.com' || url.port || url.username || url.password || url.search || url.hash)throw new HttpError(400,'INVALID_DRIVE_FOLDER');driveFolderId=url.pathname.match(/^\/drive\/(?:u\/\d+\/)?folders\/([\w-]+)\/?$/)?.[1]||'';if(!driveFolderId)throw new HttpError(400,'INVALID_DRIVE_FOLDER');}
+  if(driveFolderId && !/^[\w-]{1,200}$/.test(driveFolderId))throw new HttpError(400,'INVALID_DRIVE_FOLDER');
+  if(ownerEmail && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(ownerEmail))throw new HttpError(400,'INVALID_OWNER');
   const enabled=input.enabled===true,approved=input.approved===true;
-  if(enabled && (!notebookId || !approved))throw new HttpError(400,'NOTEBOOK_APPROVAL_REQUIRED');
-  return {department,title,description,owner,notebookId,notebookUrl,enabled,approved,archived:false};
+  if(enabled && ((!notebookId && !driveFolderId) || !approved))throw new HttpError(400,'NOTEBOOK_APPROVAL_REQUIRED');
+  return {department,title,description,owner,ownerEmail,driveFolderId,notebookId,notebookUrl,enabled,approved,archived:false};
 }
 export function createNotebookRepository(storeFactory,env=process.env) {
   async function store(){if(storeFactory)return storeFactory();const {getStore}=await import('@netlify/blobs');
