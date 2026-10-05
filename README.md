@@ -70,3 +70,9 @@ The scripted LS CCA demo stays clearly labelled and separate from live sources.
 ### Guided tutorial
 
 The header Tutorial button opens a replayable English/Thai walkthrough with the CCA QA gold spotlight and dimmed background. Chat guidance covers access, questions, citations, demo and language. Open Department notebooks and choose Tutorial for the department lead sync walkthrough. Next, Back, Finish, close and Escape support keyboard use; the guide never starts a sync or sends a question.
+
+## Target hosting: Harrow servers
+
+The in-app IT guide now describes school-hosted deployment without Netlify in the operating process. This is a migration plan, not a completed server port. Harrow hosts static files, a Node API service and a persistent database. Google Drive, staff Google sign-in and Gemini remain external dependencies.
+
+Before deploying on Harrow infrastructure, adapt `netlify/functions/ask.mjs` to the school's HTTP server; update the frontend API URL to a same-origin `/api/ask` endpoint; inject school database adapters into the catalogue and sync repositories instead of their default Netlify Blobs stores. Preserve atomic conditional writes, revision checks and leases, separate staging/production data, backups, existing security headers, HTTPS-origin handling and request limits. Use the exact Harrow HTTPS origins in Google OAuth. Store the documented environment variables in the school's protected API service environment. Restart the service after configuration changes and perform the same source-sync and access acceptance checks.
