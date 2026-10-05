@@ -1,3 +1,4 @@
+import {demoAnswer,demoSources} from '../public/demo-notebook.js';
 import {initialDepartments} from '../public/notebook-drafts.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -8,9 +9,9 @@ const app=await readFile(new URL('../public/app.js',import.meta.url),'utf8');
 const notebooks=await readFile(new URL('../public/notebooks.js',import.meta.url),'utf8');
 test('staff chat and notebook workspace load together before school setup',async()=>{
   const dom=new JSDOM(html,{url:'https://harrow.test/',runScripts:'outside-only'}),w=dom.window,d=w.document;
-  w.fetch=async()=>Response.json({ready:false,authReady:false,clientId:'',provider:'notebooklm'});
+  let requests=0;w.fetch=async()=>{requests++;returnResponse.json({ready:false,authReady:false,clientId:'',provider:'notebooklm'});};
   const setup=w.Function('initialDepartments',notebooks.replace(/^import[^\n]+\n/,'').replace('export function','function')+';return setupNotebooks;')(initialDepartments);
-  await w.Function('setupNotebooks','return (async()=>{'+app.replace(/^import[^\n]+\n/,'')+'\n})();')(setup);
+  await w.Function('setupNotebooks','demoAnswer','demoSources','return (async()=>{'+app.replace(/^(?:import[^\n]+\n)+/,'')+'\n})();')(setup,demoAnswer,demoSources);
   await new Promise(resolve=>setImmediate(resolve));
   assert.match(d.getElementById('conversation').textContent,/Hello, I’m Harrow Ask/);
   assert.equal(d.getElementById('send').disabled,true);
@@ -20,6 +21,7 @@ test('staff chat and notebook workspace load together before school setup',async
   assert.equal(d.getElementById('google-signin').parentElement.id,'registry-signin');
   d.getElementById('back-chat').click();
   assert.equal(d.getElementById('staff-chat').hidden,false);
+  d.getElementById('demo-notebook').showModal=function(){this.open=true;};d.getElementById('demo-notebook').close=function(){this.open=false;};d.getElementById('demo-chat').click();assert.equal(d.getElementById('send').disabled,false);d.getElementById('demo-source-view').click();assert.equal(d.querySelectorAll('#demo-documents section').length,3);d.getElementById('close-demo-notebook').click();const initialRequests=requests;d.getElementById('question').value='How do I request cover?';d.getElementById('question-form').dispatchEvent(new w.Event('submit',{cancelable:true}));await new Promise(resolve=>setImmediate(resolve));assert.match(d.getElementById('conversation').textContent,/Demo source: staffing/);assert.equal(requests,initialRequests);d.getElementById('demo-chat').click();assert.equal(d.getElementById('send').disabled,true);
   d.getElementById('language').click();
   assert.equal(d.documentElement.lang,'th');
   assert.match(d.getElementById('conversation').textContent,/สวัสดี/);

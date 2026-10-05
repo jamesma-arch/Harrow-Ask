@@ -23,6 +23,7 @@ export function setupNotebooks({api,getUser,getConfig,onChange}) {
       if(entry.owner)card.append(text('small','Maintained by '+entry.owner));
       const controls=text('div','','notebook-card-actions');
       const edit=text('button',entry.archived?'Restore / edit':'Edit');edit.type='button';edit.disabled=!getUser()?.admin;edit.addEventListener('click',()=>{editing=entry.id;for(const key of ['department','title','description','owner','notebookUrl','notebookId'])form.elements[key].value=entry[key]||'';form.elements.approved.checked=entry.approved;form.elements.enabled.checked=entry.enabled;$('editor-title').textContent='Edit '+entry.department;form.elements.department.focus();});controls.append(edit);
+      if(entry.id==='demo-ls-cca' && !entry.notebookId){const sample=text('button','View demo notebook');sample.type='button';sample.addEventListener('click',()=>document.dispatchEvent(new Event('harrow-demo-notebook')));controls.append(sample);}
       if(entry.notebookUrl){const link=text('a','Open notebook ↗');link.href=entry.notebookUrl;link.target='_blank';link.rel='noopener noreferrer';controls.append(link);}
       if(!entry.archived){const archive=text('button','Archive');archive.type='button';archive.disabled=!getUser()?.admin;archive.addEventListener('click',()=>{if(confirm('Archive '+entry.department+'? It will stop supplying answers. You can restore it later.'))void save({action:'archive',id:entry.id});});controls.append(archive);}
       card.append(controls);list.append(card);

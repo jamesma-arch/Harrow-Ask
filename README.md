@@ -46,6 +46,9 @@ Multi-notebook gateway request: notebooks: [{ notebookId, department, title }]. 
 
 The NOTEBOOKLM_NOTEBOOK_ID environment variable is now optional. It is used only as a compatibility fallback while the registry has never been populated; an archived/paused registry does not re-enable that fallback. Manage source contents and permissions in NotebookLM itself.
 
-Run npm test for all 28 tests, including registry persistence, concurrent edits, admin-only access, source activation/archival, cross-department routing and excluded-source withholding. Storage and NotebookLM gateway calls are fixtures in tests; live school acceptance is not yet complete.
+Run npm test for all 31 tests, including registry persistence, concurrent edits, admin-only access, source activation/archival, cross-department routing and excluded-source withholding. Storage and NotebookLM gateway calls are fixtures in tests; live school acceptance is not yet complete.
 
 The initial admin catalog includes a demo **Lower School CCA** draft with no notebook link or ID. It supplies no chat answers until an administrator adds a notebook and approves/enables it. Before sign-in, only this public sample is displayed; saved department records remain protected. The first admin edit saves the draft in the registry, and archiving it does not recreate it.
+
+## Interactive demo notebook
+Try demo opens a self-contained LS CCA demonstration with three labelled illustrative sources (attendance, cover and QA). The draft department card opens the same source viewer. Answers use scripted topic matching, not NotebookLM or a generative model. Unknown topics are declined. No demo questions are sent to the school gateway, no notebook identifiers are fabricated, and the real source registry stays unchanged. Exit demo resets the conversation and restores the normal authenticated chat.
