@@ -15,3 +15,5 @@
 #tour-progress{color:#88703c;font-size:11px!important;margin:8px 0;}
 .tour-actions{display:flex;justify-content:space-between;gap:12px;margin-top:18px;}
 @media(prefers-reduced-motion:no-preference){#tour-card{animation:appear .18s ease-out;}}
+
+.it-setup{background:#fffdf7;border:1px solid #d8caa8;border-radius:10px;margin:16px 0;font-size:12px;}.it-setup>summary{cursor:pointer;padding:13px 16px;font-weight:700;color:#756440;}.it-setup>summary:focus-visible{outline:3px solid var(--gold);outline-offset:3px;}.it-setup-body{padding:0 18px 16px;overflow-wrap:anywhere;}.it-setup-body li{margin:14px 0;}.it-setup-body ol{padding-left:22px;}.it-table-scroll{overflow-x:auto;}.it-setup table{border-collapse:collapse;width:100%;text-align:left;font-size:11px;}.it-setup caption{text-align:left;font-weight:700;padding:8px 0;}.it-setup th,.it-setup td{border:1px solid var(--line);padding:9px;vertical-align:top;}.it-setup tbody th{font-weight:400;width:42%;}.it-setup thead{background:#f3eddf;}.it-setup code{font-size:11px;overflow-wrap:anywhere;}.it-setup a{color:var(--navy);text-decoration:underline;}

@@ -26,7 +26,7 @@ function render(){
 for(const [id,key] of Object.entries({heading:'heading',subtitle:'subtitle',hint:'hint',send:'ask',guide:'guide',signout:'signout','new-chat':'newchat','source-label':'source',privacy:'privacy','footer-note':'footer'}))$(id).textContent=t()[key];
 document.documentElement.lang=language;$('question').placeholder=t().placeholder;$('language').textContent=language==='en'?'ไทย':'English';$('signout').hidden=!user; registry?.sync();
 $('send').disabled=busy || (!demo && (!config.ready || !user));
-$('demo-notice').hidden=!demo;$('demo-chat').textContent=demo?'Exit demo':'Try demo';if(demo)$('source-label').textContent='DEMO · SAMPLE LS CCA NOTEBOOK';
+$('it-setup').hidden=demo;$('demo-notice').hidden=!demo;$('demo-chat').textContent=demo?'Exit demo':'Try demo';if(demo)$('source-label').textContent='DEMO · SAMPLE LS CCA NOTEBOOK';
 $('connection-note').hidden=demo || Boolean(config.ready && user);$('connection-note').textContent=!config.ready?t().setup:t().signin;
 $('suggestions').replaceChildren();for(const example of (demo?(language==='th'?['เช็กชื่ออย่างไร?','ขอผู้สอนแทนอย่างไร?','ตรวจสอบคุณภาพกิจกรรมอย่างไร?']:['How do I check CCA attendance?','How do I request cover?','What should a QA observation include?']):t().examples)){const button=document.createElement('button');button.type='button';button.textContent=example;button.addEventListener('click',()=>{$('question').value=example;$('question').focus();});$('suggestions').append(button);}
 }
