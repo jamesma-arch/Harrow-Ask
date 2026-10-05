@@ -1,0 +1,21 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { generateKeyPairSync, verify } from 'node:crypto';
+import { createDriveSearch } from '../server/drive-search.mjs';
+const {privateKey,publicKey}=generateKeyPairSync('rsa',{modulusLength:2048});
+const env={DRIVE_SERVICE_ACCOUNT_EMAIL:'sources@school-project.iam.gserviceaccount.com',DRIVE_SERVICE_ACCOUNT_PRIVATE_KEY:privateKey.export({type:'pkcs8',format:'pem'}),GEMINI_API_KEY:'test-key',GEMINI_MODEL:'gemini-approved'};
+const file={id:'drive-one',name:'Staff guidance',mimeType:'application/vnd.google-apps.document',modifiedTime:'2026-10-05T09:00:00Z',version:'1'};
+function mock({unsafeUpload=false,changed=false}={}){const calls=[];const fetcher=async(url,opts)=>{calls.push({url:String(url),opts});const u=new URL(url);
+  if(u.hostname==='oauth2.googleapis.com'){const assertion=opts.body.get('assertion'),parts=assertion.split('.');assert(verify('RSA-SHA256',Buffer.from(parts.slice(0,2).join('.')),publicKey,Buffer.from(parts[2],'base64url')));const claims=JSON.parse(Buffer.from(parts[1],'base64url'));assert.equal(claims.scope,'https://www.googleapis.com/auth/drive.readonly');assert.equal(claims.sub,undefined);return Response.json({access_token:'read-only-token',expires_in:3600});}
+  if(u.hostname==='www.googleapis.com'){assert.equal(opts.headers.authorization,'Bearer read-only-token');if(u.pathname.endsWith('/folder'))return Response.json({mimeType:'application/vnd.google-apps.folder'});if(u.pathname==='/drive/v3/files')return Response.json({files:[file]});if(u.pathname.endsWith('/export')){assert.equal(u.searchParams.get('mimeType'),'application/pdf');return new Response('%PDF example');}return Response.json({...file,version:changed?'2':'1'});}
+  if(u.pathname==='/v1beta/fileSearchStores')return Response.json({name:'fileSearchStores/cca-one'});
+  if(u.pathname.startsWith('/upload/')){const body=JSON.parse(opts.body);assert.equal(body.displayName,'drive:drive-one:Staff guidance');assert.equal(body.customMetadata[0].stringValue,'drive-one');return new Response('',{headers:{'x-goog-upload-url':unsafeUpload?'https://evil.test/upload':'https://generativelanguage.googleapis.com/session'}});}
+  if(u.pathname==='/session'){assert.equal(opts.headers['X-Goog-Upload-Command'],'upload, finalize');return Response.json({name:'fileSearchStores/cca-one/operations/op-one',done:false});}
+  if(u.pathname.endsWith('/operations/op-one'))return Response.json({done:true});
+  if(u.pathname.endsWith(':generateContent'))return Response.json({candidates:[]});
+  throw Error('Unexpected API path: '+u.pathname);
+};return {fetcher,calls};}
+test('Google Drive documents export through read-only auth and use the official resumable import flow',async()=>{const m=mock(),client=createDriveSearch(env,m.fetcher);assert.equal((await client.list('folder'))[0].id,file.id);assert.equal(await client.create('LS CCA'),'fileSearchStores/cca-one');const op=await client.upload('fileSearchStores/cca-one',file);assert.equal((await client.operation(op.name)).done,true);assert.equal(m.calls.filter(c=>c.url.includes('oauth2.googleapis.com')).length,1);});
+test('upload redirects to other origins are rejected before sending document bytes',async()=>{const m=mock({unsafeUpload:true}),client=createDriveSearch(env,m.fetcher);await assert.rejects(client.upload('fileSearchStores/cca-one',file),/SOURCE_SERVICE_UNAVAILABLE/);assert(!m.calls.some(c=>c.url.includes('evil.test')));});
+test('a file changed while downloading is never imported',async()=>{const m=mock({changed:true}),client=createDriveSearch(env,m.fetcher);await assert.rejects(client.upload('fileSearchStores/cca-one',file),/SOURCE_CHANGED/);assert(!m.calls.some(c=>c.url.includes('/upload/')));});
+test('question requests include only active search stores and no Drive credentials',async()=>{const m=mock(),client=createDriveSearch(env,m.fetcher);await client.answer('Where do pupils muster?','en',[],[{store:'fileSearchStores/cca-one'}]);const sent=JSON.parse(m.calls[0].opts.body);assert.deepEqual(sent.tools,[{fileSearch:{fileSearchStoreNames:['fileSearchStores/cca-one']}}]);assert.match(sent.systemInstruction.parts[0].text,/pending approvals/);assert(!m.calls[0].opts.body.includes('read-only-token'));});
